@@ -1,0 +1,98 @@
+package com.webservicejava.servlets;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+
+/**
+ * Servlet implementation class StudentServlet
+ */
+@WebServlet("/StudentServlet")
+public class StudentServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public StudentServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("aplication/json; charset-UTF=8");
+		String pathInfo = request.getPathInfo();
+		
+		// GET: todo
+		if(pathInfo == null || pathInfo.equals("/")){
+			doGetAll(request, response);
+		    // GET: todo/id
+		} else {
+			doGetById(request, response, pathInfo);
+		}
+	}
+	
+	// GET: todo
+	protected void doGetAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Gson gson = new Gson();
+		String json = gson.toJson(todoList); response.getWriter().write(json);
+	}
+	
+	// GET: todo/id
+	protected void doGetById(HttpServletRequest request, HttpServletResponse response, String pathInfo) throws ServletException, IOException {
+		String[] splits = pathInfo.split("/"); if(splits.length != 2) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return; 
+	}
+	String taskId = splits[1];
+	Task task = findTaskById(taskId); 
+	if (task == null) {
+		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		response.getWriter().write(""); } 
+	else {
+		Gson gson = new Gson();
+		String json = gson.toJson(task); response.setStatus(HttpServletResponse.SC_OK); response.getWriter().write(json);
+		} 
+	}
+
+	private Task findTaskById(String taskId) { Optional<Task> result = todoList.stream()
+			.filter(task -> task.getId().equals(taskId)) .findFirst();
+	if (!result.isPresent()) { 
+		return null;
+	}
+		return result.get(); 
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+	
+	
+
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+}

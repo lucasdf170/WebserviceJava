@@ -1,0 +1,17 @@
+package com.taskmanager.domain;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+public class Task implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private String id;
+
+	private String title; private String descrition; private Boolean priority;
+
+	public String getId() { 
+		return id;
+	}
+}
